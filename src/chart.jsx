@@ -84,6 +84,9 @@ export default class ChartSvg extends Component {
     var yScaleSet = scale(newYScale);
 
     var children = React.Children.map(this.props.children, (el) => {
+        if (el == null) {
+          return null
+        }
         return React.cloneElement(el, {
           height: height,
           width: width,
