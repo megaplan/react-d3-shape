@@ -17,7 +17,7 @@ import CommonProps from './commonProps';
 
 export default class ChartSvg extends Component {
   constructor(props) {
-    super (props);
+    super(props);
   }
 
   static defaultProps = Object.assign(CommonProps, {
@@ -55,8 +55,9 @@ export default class ChartSvg extends Component {
       svgClassName,
       id,
       x,
-      y
-    } = this.props;
+      y,
+      xWordWrap
+      } = this.props;
 
     var xRange = xRange || [0, width - margins.left - margins.right];
     var yRange = yRange || [height - margins.top - margins.bottom, 0]
@@ -84,45 +85,46 @@ export default class ChartSvg extends Component {
     var yScaleSet = scale(newYScale);
 
     var children = React.Children.map(this.props.children, (el) => {
-        if (el == null) {
-          return null
-        }
-        return React.cloneElement(el, {
-          height: height,
-          width: width,
-          margins: margins,
-          xScaleSet: xScaleSet,
-          yScaleSet: yScaleSet,
-          xDomain: xDomain,
-          yDomain: yDomain,
-          xRange: xRange,
-          yRange: yRange,
-          xRangeRoundBands: xRangeRoundBands,
-          yRangeRoundBands: yRangeRoundBands,
-          xScale: xScale,
-          yScale: yScale,
-          xTickFormat: xTickFormat,
-          yTickFormat: yTickFormat,
-          xTicks: xTicks,
-          yTicks: yTicks,
-          data: data,
-          x: x,
-          y: y
-        })
+      if(el == null) {
+        return null
+      }
+      return React.cloneElement(el, {
+        height: height,
+        width: width,
+        margins: margins,
+        xScaleSet: xScaleSet,
+        yScaleSet: yScaleSet,
+        xDomain: xDomain,
+        yDomain: yDomain,
+        xRange: xRange,
+        yRange: yRange,
+        xRangeRoundBands: xRangeRoundBands,
+        yRangeRoundBands: yRangeRoundBands,
+        xScale: xScale,
+        yScale: yScale,
+        xTickFormat: xTickFormat,
+        yTickFormat: yTickFormat,
+        xTicks: xTicks,
+        yTicks: yTicks,
+        xWordWrap: xWordWrap,
+        data: data,
+        x: x,
+        y: y
+      })
     });
 
     var t = `translate(${margins.left}, ${margins.top})`;
 
     return (
       <svg
-        height = {height}
-        width = {width}
-        className = {svgClassName}
-        id = {id}
-        ref = "svgContainer"
+        height={height}
+        width={width}
+        className={svgClassName}
+        id={id}
+        ref="svgContainer"
       >
         <g
-          transform = {t}
+          transform={t}
         >
           {children}
         </g>
