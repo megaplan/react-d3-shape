@@ -10,13 +10,15 @@ import {pieProps} from '../commonProps';
 import ReactFauxDOM from 'react-faux-dom';
 
 export default class Pie extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
   static defaultProps = Object.assign(pieProps, {
-    onMouseOver: (d) => {},
-    onMouseOut: (d) => {}
+    onMouseOver: (d) => {
+    },
+    onMouseOut: (d) => {
+    }
   })
 
   mkSeries() {
@@ -26,7 +28,7 @@ export default class Pie extends Component {
       value,
       name,
       categoricalColors
-    } = this.props;
+      } = this.props;
 
     var chartSeriesData = chartSeries.map((f, i) => {
 
@@ -51,7 +53,7 @@ export default class Pie extends Component {
     return chartSeriesData;
   }
 
-  _mkPie (dom) {
+  _mkPie(dom) {
     var {
       width,
       height,
@@ -61,8 +63,10 @@ export default class Pie extends Component {
       value,
       radius,
       onMouseOut,
-      onMouseOver
-    } = this.props;
+      onMouseOver,
+      showLegendText,
+      showStroke,
+      } = this.props;
 
     var radius = this.props.radius || Math.min(width - 100, height - 100) / 2;
     var outerRadius = outerRadius || (radius - 10)
@@ -78,20 +82,26 @@ export default class Pie extends Component {
       .innerRadius(innerRadius);
 
     var pie = d3.layout.pie()
-      .sort((a, b) => { return pieSort(a.value, b.value)})
-      .value((d) => { return d.value; })
+      .sort((a, b) => {
+        return pieSort(a.value, b.value)
+      })
+      .value((d) => {
+        return d.value;
+      })
 
     var pieDom = d3.select(dom);
 
     var g = pieDom.selectAll('.arc')
-              .data(pie(chartSeriesData))
-            .enter().append('g')
-              .attr('class', 'arc');
+      .data(pie(chartSeriesData))
+      .enter().append('g')
+      .attr('class', 'arc');
 
     g.append("path")
       .attr("d", arc)
-      .style("fill", (d) => { return d.data.color; })
-      .style("stroke", "#FFF")
+      .style("fill", (d) => {
+        return d.data.color;
+      })
+      .style("stroke", showStroke ? "#fff" : "none")
       .attr("style", (d) => {
         var s = '';
         if(d.data.style) {
@@ -106,34 +116,38 @@ export default class Pie extends Component {
 
     var labelr = radius + 10;
 
-    g.append("text")
-      .attr("transform", (d) => {
-        var c = arc.centroid(d),
-          x = c[0],
-          y = c[1],
+    if(showLegendText) {
+      g.append("text")
+        .attr("transform", (d) => {
+          var c = arc.centroid(d),
+            x = c[0],
+            y = c[1],
           // pythagorean theorem for hypotenuse
-          h = Math.sqrt( x * x + y * y);
+            h = Math.sqrt(x * x + y * y);
 
-        return "translate(" + (x / h * labelr) +  ',' +
-           (y / h * labelr) +  ")";
-      })
-      .attr("dy", ".35em")
-      .style("text-anchor", (d) => {
-        return (d.endAngle + d.startAngle)/2 > Math.PI ?
-          "end" : "start";
-      })
-      .text((d) => { return d.data.name; });
+          return "translate(" + (x / h * labelr) + ',' +
+            (y / h * labelr) + ")";
+        })
+        .attr("dy", ".35em")
+        .style("text-anchor", (d) => {
+          return (d.endAngle + d.startAngle) / 2 > Math.PI ?
+            "end" : "start";
+        })
+        .text((d) => {
+          return d.data.name;
+        });
+    }
 
     return pieDom;
   }
 
   render() {
 
-    const{
+    const {
       width,
       height,
       margins
-    } = this.props;
+      } = this.props;
 
     var t = `translate(${(width - margins.left - margins.right) / 2},  ${(height - margins.top - margins.bottom) / 2})`;
 
