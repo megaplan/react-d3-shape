@@ -66,6 +66,7 @@ export default class Pie extends Component {
       onMouseOver,
       showLegendText,
       showStroke,
+      arcClassName
       } = this.props;
 
     var radius = this.props.radius || Math.min(width - 100, height - 100) / 2;
@@ -94,7 +95,7 @@ export default class Pie extends Component {
     var g = pieDom.selectAll('.arc')
       .data(pie(chartSeriesData))
       .enter().append('g')
-      .attr('class', 'arc');
+      .attr('class', `${arcClassName} arc`);
 
     g.append("path")
       .attr("d", arc)
