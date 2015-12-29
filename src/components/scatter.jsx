@@ -11,25 +11,29 @@ import ReactFauxDOM from 'react-faux-dom';
 import {series} from '../utils/series';
 
 export default class Scatter extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
   static defaultProps = {
     defaultSymbol: 'circle',
     defaultSymbolSize: 10,
-    scatterClassName: 'react-d3-basic__scatter'
+    scatterClassName: 'react-d3-basic__scatter',
+    scatterBgClassName: 'react-d3-basic__scatter_bg',
+    showScatterBg: false
   }
 
   _mkScatter(dom, dataset) {
     const {
       scatterClassName,
+      scatterBgClassName,
+      showScatterBg,
       defaultSymbol,
       defaultSymbolSize,
       brushSymbol,
       xScaleSet,
       yScaleSet
-    } = this.props;
+      } = this.props;
 
     // for building symbols in brush, set to circle and size to 4
     if(brushSymbol) {
@@ -41,20 +45,40 @@ export default class Scatter extends Component {
 
     dots.selectAll('g')
       .data(dataset)
-    .enter().append('g')
+      .enter().append('g')
       .each(function(dot) {
 
-        var symbol = dot.symbol? dot.symbol: defaultSymbol;
-        var symbolSize = dot.symbolSize? dot.symbolSize: defaultSymbolSize;
+        var symbol = dot.symbol ? dot.symbol : defaultSymbol;
+        var symbolSize = dot.symbolSize ? dot.symbolSize : defaultSymbolSize;
 
         var dom = d3.select(this)
-          .selectAll(`${scatterClassName}`)
+
+        if(showScatterBg) {
+          dom.selectAll(`${scatterClassName}`)
+            .data(dot.data)
+            .enter().append('path')
+            .attr('class', `${scatterBgClassName} scatter`)
+            .style('fill', "#ffffff")
+            .attr('transform', (d) => {
+              return "translate(" + xScaleSet(d.x) + "," + yScaleSet(d.y) + ")";
+            })
+            .attr('d', d3.svg.symbol().size((d) => {
+              return symbolSize * symbolSize;
+            }).type(symbol))
+        }
+
+        dom.selectAll(`${scatterClassName}`)
           .data(dot.data)
-        .enter().append('path')
-          .attr('class', 'react-d3-basic__scatter__path')
+          .enter()
+          .append('path')
+          .attr('class', `${scatterClassName} scatter`)
           .style('fill', dot.color)
-          .attr('transform', (d) => { return "translate(" + xScaleSet(d.x) + "," + yScaleSet(d.y) + ")"; })
-          .attr('d', d3.svg.symbol().size((d) => { return symbolSize * symbolSize;}).type(symbol))
+          .attr('transform', (d) => {
+            return "translate(" + xScaleSet(d.x) + "," + yScaleSet(d.y) + ")";
+          })
+          .attr('d', d3.svg.symbol().size((d) => {
+            return symbolSize * symbolSize;
+          }).type(symbol))
 
         // set style for dot
         if(dot.style) {
