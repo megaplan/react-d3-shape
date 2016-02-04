@@ -10,14 +10,17 @@ import ReactFauxDOM from 'react-faux-dom';
 import {series} from '../utils/series';
 
 export default class BarStack extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
   static defaultProps = {
-    onMouseOver: (d) => {},
-    onMouseOut: (d) => {},
-    barClassName: 'react-d3-basic__bar_stack'
+    onMouseOver: (d) => {
+    },
+    onMouseOut: (d) => {
+    },
+    barClassName: 'react-d3-basic__bar_stack',
+    barStackClass: 'react-d3-basic__stack_bars'
   }
 
   _mkBarStack(dom) {
@@ -28,8 +31,9 @@ export default class BarStack extends Component {
       xScaleSet,
       yScaleSet,
       onMouseOver,
-      onMouseOut
-    } = this.props;
+      onMouseOut,
+      barStackClass
+      } = this.props;
 
     var dataset = series(this.props);
 
@@ -42,19 +46,21 @@ export default class BarStack extends Component {
     var domain = yScaleSet.domain();
     var zeroBase;
 
-    if (domain[0] * domain[1] < 0) {
+    if(domain[0] * domain[1] < 0) {
       zeroBase = yScaleSet(0);
-    } else if (((domain[0] * domain[1]) >= 0) && (domain[0] >= 0)){
+    } else if(((domain[0] * domain[1]) >= 0) && (domain[0] >= 0)) {
       zeroBase = yScaleSet.range()[0];
-    } else if (((domain[0] * domain[1]) >= 0) && (domain[0] < 0)){
+    } else if(((domain[0] * domain[1]) >= 0) && (domain[0] < 0)) {
       zeroBase = yScaleSet.range()[1];
     }
 
     var barGroup = chart.selectAll("g")
       .data(_setStack(dataset))
-    .enter().append("g")
-      .attr("class", "barGroup")
-      .style("fill", (d) => {return d.color;})
+      .enter().append("g")
+      .attr("class", `${barStackClass} barGroup`)
+      .style("fill", (d) => {
+        return d.color;
+      })
       .attr("style", (d) => {
         var s = '';
         if(d.style) {
@@ -66,31 +72,39 @@ export default class BarStack extends Component {
       })
 
     barGroup.selectAll("rect")
-      .data((d) => {return d.data;})
-    .enter().append("rect")
+      .data((d) => {
+        return d.data;
+      })
+      .enter().append("rect")
       .attr("class", `${barClassName} bar`)
       .attr("width", xScaleSet.rangeBand())
-      .attr("x", (d) => { return xScaleSet(d.x)? xScaleSet(d.x): -10000 })
-      .attr("y", (d, i) => { return yScaleSet(d.y0 + d.y); })
-      .attr("height", (d, i) => { return Math.abs(yScaleSet(d.y) - yScaleSet(0));})
+      .attr("x", (d) => {
+        return xScaleSet(d.x) ? xScaleSet(d.x) : -10000
+      })
+      .attr("y", (d, i) => {
+        return yScaleSet(d.y0 + d.y);
+      })
+      .attr("height", (d, i) => {
+        return Math.abs(yScaleSet(d.y) - yScaleSet(0));
+      })
       .on("mouseover", onMouseOver)
       .on("mouseout", onMouseOut)
 
     return chart;
   }
 
-  _setStack () {
-    const{
+  _setStack() {
+    const {
       chartSeries
-    } = this.props;
+      } = this.props;
 
     var buildOut = function(len) {
       // baseline for positive and negative bars respectively.
       var currentXOffsets = [];
       var currentXIndex = 0;
-      return function(d, y0, y){
+      return function(d, y0, y) {
 
-        if(currentXIndex++ % len === 0){
+        if(currentXIndex++ % len === 0) {
           currentXOffsets = [0, 0];
         }
 
@@ -106,7 +120,9 @@ export default class BarStack extends Component {
       }
     }
     return d3.layout.stack()
-      .values((d) => { return d.data; })
+      .values((d) => {
+        return d.data;
+      })
       .out(buildOut(chartSeries.length));
 
   }
