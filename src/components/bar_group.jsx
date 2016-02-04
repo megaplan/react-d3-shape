@@ -10,14 +10,17 @@ import ReactFauxDOM from 'react-faux-dom';
 import {series} from '../utils/series';
 
 export default class BarGroup extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
   static defaultProps = {
-    onMouseOver: (d) => {},
-    onMouseOut: (d) => {},
-    barClassName: 'react-d3-basic__bar_group'
+    onMouseOver: (d) => {
+    },
+    onMouseOut: (d) => {
+    },
+    barClassName: 'react-d3-basic__bar_group',
+    barGroupClass: 'react-d3-basic__group_bars'
   }
 
   _mkBarGroup(dom) {
@@ -28,24 +31,27 @@ export default class BarGroup extends Component {
       xScaleSet,
       yScaleSet,
       onMouseOut,
-      onMouseOver
-    } = this.props;
+      onMouseOver,
+      barGroupClass
+      } = this.props;
 
     var dataset = series(this.props);
     var x1 = d3.scale.ordinal();
 
     // mapping x1, inner x axis
-    x1.domain(dataset.map((d) => { return d.field}))
+    x1.domain(dataset.map((d) => {
+        return d.field
+      }))
       .rangeRoundBands([0, xScaleSet.rangeBand()]);
 
     var domain = yScaleSet.domain();
     var zeroBase;
 
-    if (domain[0] * domain[1] < 0) {
+    if(domain[0] * domain[1] < 0) {
       zeroBase = yScaleSet(0);
-    } else if (((domain[0] * domain[1]) >= 0) && (domain[0] >= 0)){
+    } else if(((domain[0] * domain[1]) >= 0) && (domain[0] >= 0)) {
       zeroBase = yScaleSet.range()[0];
-    } else if (((domain[0] * domain[1]) >= 0) && (domain[0] < 0)){
+    } else if(((domain[0] * domain[1]) >= 0) && (domain[0] < 0)) {
       zeroBase = yScaleSet.range()[1];
     }
 
@@ -54,19 +60,27 @@ export default class BarGroup extends Component {
 
     chart.selectAll('.bargroup')
       .data(dataset)
-    .enter().append('g')
-      .attr("class", "bargroup")
+      .enter().append('g')
+      .attr("class", `${barGroupClass} bargroup`)
       .each(function(dt, i) {
         var dom = d3.select(this)
           .selectAll("rect")
           .data(dt.data)
-        .enter().append("rect")
+          .enter().append("rect")
           .attr("class", `${barClassName} bar`)
           .attr("width", x1.rangeBand())
-          .attr("x", function(d) { return xScaleSet(d.x)? (xScaleSet(d.x) + x1.rangeBand() * i) : -10000})
-          .attr("y", function(d) { return d.y < 0 ? zeroBase: yScaleSet(d.y); })
-          .attr("height", function(d) { return d.y < domain[0] ? 0: Math.abs(zeroBase - yScaleSet(d.y)) })
-          .style("fill", function(d) { return dt.color; })
+          .attr("x", function(d) {
+            return xScaleSet(d.x) ? (xScaleSet(d.x) + x1.rangeBand() * i) : -10000
+          })
+          .attr("y", function(d) {
+            return d.y < 0 ? zeroBase : yScaleSet(d.y);
+          })
+          .attr("height", function(d) {
+            return d.y < domain[0] ? 0 : Math.abs(zeroBase - yScaleSet(d.y))
+          })
+          .style("fill", function(d) {
+            return dt.color;
+          })
           .on("mouseover", onMouseOver)
           .on("mouseout", onMouseOut)
 
