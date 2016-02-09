@@ -20,7 +20,8 @@ export default class BarStack extends Component {
     onMouseOut: (d) => {
     },
     barClassName: 'react-d3-basic__bar_stack',
-    barStackClass: 'react-d3-basic__stack_bars'
+    barStackClass: 'react-d3-basic__stack_bars',
+    valueInBar: false
   }
 
   _mkBarStack(dom) {
@@ -32,7 +33,8 @@ export default class BarStack extends Component {
       yScaleSet,
       onMouseOver,
       onMouseOut,
-      barStackClass
+      barStackClass,
+      valueInBar
       } = this.props;
 
     var dataset = series(this.props);
@@ -75,7 +77,8 @@ export default class BarStack extends Component {
       .data((d) => {
         return d.data;
       })
-      .enter().append("rect")
+      .enter()
+      .append("rect")
       .attr("class", `${barClassName} bar`)
       .attr("width", xScaleSet.rangeBand())
       .attr("x", (d) => {
@@ -89,6 +92,42 @@ export default class BarStack extends Component {
       })
       .on("mouseover", onMouseOver)
       .on("mouseout", onMouseOut)
+
+    if(valueInBar) {
+      barGroup.selectAll("text")
+        .data((d) => {
+          return d.data;
+        })
+        .enter()
+        .append("text")
+        .attr("text-anchor", "middle")
+        .attr("height", 15)
+        .attr("x", (d) => {
+          return xScaleSet(d.x) ? xScaleSet(d.x) + xScaleSet.rangeBand() / 2 : -10000
+        })
+        .attr("y", (d) => {
+          const height = Math.abs(yScaleSet(d.y) - yScaleSet(0))
+          if(height < 15) {
+            return yScaleSet(d.y0 + d.y) + height
+          }
+          return yScaleSet(d.y0 + d.y) + 15;
+        })
+        .attr("style", "font-weight:bold")
+        .text((d) => {
+          if(d.y > 0) {
+            return d.y
+          }
+          return ""
+        })
+        .attr("fill", (d) => {
+          const hexColor = parseInt(d.color.replace("#", ""), 16)
+          const l = Math.max((hexColor & 0xFF0000) >> 16, (hexColor & 0x00ff00) >> 8, hexColor & 0x0000ff) / 255
+          if(l > 0.7) {
+            return "#000000"
+          }
+          return "#ffffff"
+        })
+    }
 
     return chart;
   }
