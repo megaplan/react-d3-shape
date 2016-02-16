@@ -21,6 +21,7 @@ export default class BarStack extends Component {
     },
     barClassName: 'react-d3-basic__bar_stack',
     barStackClass: 'react-d3-basic__stack_bars',
+    xScaleMaxWidthRect: 50,
     valueInBar: false
   }
 
@@ -34,7 +35,8 @@ export default class BarStack extends Component {
       onMouseOver,
       onMouseOut,
       barStackClass,
-      valueInBar
+      valueInBar,
+      xScaleMaxWidthRect
       } = this.props;
 
     var dataset = series(this.props);
@@ -80,7 +82,7 @@ export default class BarStack extends Component {
       .enter()
       .append("rect")
       .attr("class", `${barClassName} bar`)
-      .attr("width", xScaleSet.rangeBand())
+      .attr("width", Math.min(xScaleSet.rangeBand(), xScaleMaxWidthRect))
       .attr("x", (d) => {
         return xScaleSet(d.x) ? xScaleSet(d.x) : -10000
       })

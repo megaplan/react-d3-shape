@@ -10,15 +10,18 @@ import ReactFauxDOM from 'react-faux-dom';
 import {series} from '../utils/series';
 
 export default class Bar extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
   static defaultProps = {
     interpolate: null,
-    onMouseOver: (d) => {},
-    onMouseOut: (d) => {},
-    barClassName: 'react-d3-basic__bar'
+    onMouseOver: (d) => {
+    },
+    onMouseOut: (d) => {
+    },
+    barClassName: 'react-d3-basic__bar',
+    xScaleMaxWidthRect: 50
   }
 
   _mkBar(dom) {
@@ -29,8 +32,9 @@ export default class Bar extends Component {
       xScaleSet,
       yScaleSet,
       onMouseOut,
-      onMouseOver
-    } = this.props;
+      onMouseOver,
+      xScaleMaxWidthRect
+      } = this.props;
 
     var dataset = series(this.props)[0];
 
@@ -40,23 +44,29 @@ export default class Bar extends Component {
     var domain = yScaleSet.domain();
     var zeroBase;
 
-    if (domain[0] * domain[1] < 0) {
+    if(domain[0] * domain[1] < 0) {
       zeroBase = yScaleSet(0);
-    } else if (((domain[0] * domain[1]) >= 0) && (domain[0] >= 0)){
+    } else if(((domain[0] * domain[1]) >= 0) && (domain[0] >= 0)) {
       zeroBase = yScaleSet.range()[0];
-    } else if (((domain[0] * domain[1]) >= 0) && (domain[0] < 0)){
+    } else if(((domain[0] * domain[1]) >= 0) && (domain[0] < 0)) {
       zeroBase = yScaleSet.range()[1];
     }
 
     bar.selectAll(".bar")
       .data(dataset.data)
-    .enter().append("rect")
+      .enter().append("rect")
       .attr("class", `${barClassName} bar`)
-      .attr("x", (d) => { return xScaleSet(d.x)? xScaleSet(d.x) : -10000 })
-      .attr("width", xScaleSet.rangeBand())
-      .attr("y", (d) => { return d.y < 0 ? zeroBase: yScaleSet(d.y); })
-      .attr("height", (d) => { return d.y < domain[0] ? 0: Math.abs(zeroBase - yScaleSet(d.y))})
-      .style("fill", dataset.color )
+      .attr("x", (d) => {
+        return xScaleSet(d.x) ? xScaleSet(d.x) : -10000
+      })
+      .attr("width", Math.min(xScaleSet.rangeBand(), xScaleMaxWidthRect))
+      .attr("y", (d) => {
+        return d.y < 0 ? zeroBase : yScaleSet(d.y);
+      })
+      .attr("height", (d) => {
+        return d.y < domain[0] ? 0 : Math.abs(zeroBase - yScaleSet(d.y))
+      })
+      .style("fill", dataset.color)
       .on("mouseover", onMouseOver)
       .on("mouseout", onMouseOut)
 
