@@ -57,7 +57,7 @@ export default class Bar extends Component {
       .enter().append("rect")
       .attr("class", `${barClassName} bar`)
       .attr("x", (d) => {
-        return xScaleSet(d.x) ? xScaleSet(d.x) : -10000
+        return xScaleSet(d.x) ? xScaleSet(d.x) + ((xScaleSet.rangeBand() - Math.min(xScaleSet.rangeBand(), xScaleMaxWidthRect)) / 2) : -10000
       })
       .attr("width", Math.min(xScaleSet.rangeBand(), xScaleMaxWidthRect))
       .attr("y", (d) => {

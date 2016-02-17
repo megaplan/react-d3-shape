@@ -84,7 +84,7 @@ export default class BarStack extends Component {
       .attr("class", `${barClassName} bar`)
       .attr("width", Math.min(xScaleSet.rangeBand(), xScaleMaxWidthRect))
       .attr("x", (d) => {
-        return xScaleSet(d.x) ? xScaleSet(d.x) : -10000
+        return xScaleSet(d.x) ? xScaleSet(d.x) + ((xScaleSet.rangeBand() - Math.min(xScaleSet.rangeBand(), xScaleMaxWidthRect)) / 2) : -10000
       })
       .attr("y", (d, i) => {
         return yScaleSet(d.y0 + d.y);
