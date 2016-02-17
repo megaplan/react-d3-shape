@@ -105,7 +105,7 @@ export default class BarStack extends Component {
         .attr("text-anchor", "middle")
         .attr("height", 15)
         .attr("x", (d) => {
-          return xScaleSet(d.x) ? xScaleSet(d.x) + ((xScaleSet.rangeBand() - Math.min(xScaleSet.rangeBand(), xScaleMaxWidthRect)) / 2) : -10000
+          return xScaleSet(d.x) ? xScaleSet(d.x) + xScaleSet.rangeBand() / 2 : -10000
         })
         .attr("y", (d) => {
           const height = Math.abs(yScaleSet(d.y) - yScaleSet(0))
