@@ -116,7 +116,8 @@ export default class BarStack extends Component {
         })
         .attr("style", "font-weight:bold")
         .text((d) => {
-          if(d.y > 0) {
+          const height = Math.abs(yScaleSet(d.y) - yScaleSet(0))
+          if(d.y > 0 && height > 15) {
             return d.y
           }
           return ""
