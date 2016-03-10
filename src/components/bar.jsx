@@ -21,7 +21,8 @@ export default class Bar extends Component {
     onMouseOut: (d) => {
     },
     barClassName: 'react-d3-basic__bar',
-    xScaleMaxWidthRect: 50
+    xScaleMaxWidthRect: 50,
+    valueInBar: false
   }
 
   _mkBar(dom) {
@@ -69,6 +70,41 @@ export default class Bar extends Component {
       .style("fill", dataset.color)
       .on("mouseover", onMouseOver)
       .on("mouseout", onMouseOut)
+
+    if(valueInBar) {
+      bar.selectAll(".bar")
+        .data(dataset.data)
+        .enter()
+        .append("text")
+        .attr("text-anchor", "middle")
+        .attr("height", 15)
+        .attr("x", (d) => {
+          return xScaleSet(d.x) ? xScaleSet(d.x) + xScaleSet.rangeBand() / 2 : -10000
+        })
+        .attr("y", (d) => {
+          const height = Math.abs(yScaleSet(d.y) - yScaleSet(0))
+          if(height < 15) {
+            return yScaleSet(d.y0 + d.y) + height
+          }
+          return yScaleSet(d.y0 + d.y) + 15;
+        })
+        .attr("style", "font-weight:bold")
+        .text((d) => {
+          const height = Math.abs(yScaleSet(d.y) - yScaleSet(0))
+          if(d.y > 0 && height > 15) {
+            return d.y
+          }
+          return ""
+        })
+        .attr("fill", (d) => {
+          const hexColor = parseInt(d.color.replace("#", ""), 16)
+          const l = Math.max((hexColor & 0xFF0000) >> 16, (hexColor & 0x00ff00) >> 8, hexColor & 0x0000ff) / 255
+          if(l > 0.7) {
+            return "#000000"
+          }
+          return "#ffffff"
+        })
+    }
 
     if(dataset.style) {
       for(var key in dataset.style) {
