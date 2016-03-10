@@ -73,7 +73,7 @@ export default class Bar extends Component {
       .on("mouseout", onMouseOut)
 
     if(valueInBar) {
-      bar.selectAll(".bar")
+      bar.selectAll("text")
         .data(dataset.data)
         .enter()
         .append("text")
@@ -83,15 +83,15 @@ export default class Bar extends Component {
           return xScaleSet(d.x) ? xScaleSet(d.x) + xScaleSet.rangeBand() / 2 : -10000
         })
         .attr("y", (d) => {
-          const height = Math.abs(yScaleSet(d.y) - yScaleSet(0))
+          const height = Math.abs(d.y < domain[0] ? 0 : Math.abs(zeroBase - yScaleSet(d.y)))
           if(height < 15) {
-            return yScaleSet(d.y0 + d.y) + height
+            return yScaleSet(d.y) + height
           }
-          return yScaleSet(d.y0 + d.y) + 15;
+          return yScaleSet(d.y) + 15;
         })
         .attr("style", "font-weight:bold")
         .text((d) => {
-          const height = Math.abs(yScaleSet(d.y) - yScaleSet(0))
+          const height = Math.abs(d.y < domain[0] ? 0 : Math.abs(zeroBase - yScaleSet(d.y)))
           if(d.y > 0 && height > 15) {
             return d.y
           }
