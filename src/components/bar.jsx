@@ -34,7 +34,8 @@ export default class Bar extends Component {
       yScaleSet,
       onMouseOut,
       onMouseOver,
-      xScaleMaxWidthRect
+      xScaleMaxWidthRect,
+      valueInBar
       } = this.props;
 
     var dataset = series(this.props)[0];
