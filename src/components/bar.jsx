@@ -22,7 +22,11 @@ export default class Bar extends Component {
     },
     barClassName: 'react-d3-basic__bar',
     xScaleMaxWidthRect: 50,
-    valueInBar: false
+    valueInBar: false,
+    verticalValueInBar: false,
+    formatValueInBar: (d) => {
+      return d
+    }
   }
 
   _mkBar(dom) {
@@ -35,7 +39,9 @@ export default class Bar extends Component {
       onMouseOut,
       onMouseOver,
       xScaleMaxWidthRect,
-      valueInBar
+      valueInBar,
+      verticalValueInBar,
+      formatValueInBar
       } = this.props;
 
     var dataset = series(this.props)[0];
@@ -68,7 +74,9 @@ export default class Bar extends Component {
       .attr("height", (d) => {
         return d.y < domain[0] ? 0 : Math.abs(zeroBase - yScaleSet(d.y))
       })
-      .style("fill", dataset.color)
+      .style("fill", (d) => {
+        return d.color ? d.color : dataset.color
+      })
       .on("mouseover", onMouseOver)
       .on("mouseout", onMouseOut)
 
@@ -77,23 +85,31 @@ export default class Bar extends Component {
         .data(dataset.data)
         .enter()
         .append("text")
-        .attr("text-anchor", "middle")
+        .attr("text-anchor", verticalValueInBar ? "start" : "middle")
         .attr("height", 15)
         .attr("x", (d) => {
-          return xScaleSet(d.x) ? xScaleSet(d.x) + xScaleSet.rangeBand() / 2 : -10000
+          const x = xScaleSet(d.x) ? xScaleSet(d.x) + xScaleSet.rangeBand() / 2 : -10000
+          if(verticalValueInBar) {
+            return x + 13 / 2
+          }
+          return x
         })
         .attr("y", (d) => {
+          if(verticalValueInBar) {
+            return zeroBase - 10
+          }
           const height = Math.abs(d.y < domain[0] ? 0 : Math.abs(zeroBase - yScaleSet(d.y)))
           if(height < 15) {
             return yScaleSet(d.y) + height
           }
-          return yScaleSet(d.y) + 15;
+          return yScaleSet(d.y) + 15
         })
         .attr("style", "font-weight:bold")
         .text((d) => {
           const height = Math.abs(d.y < domain[0] ? 0 : Math.abs(zeroBase - yScaleSet(d.y)))
-          if(d.y > 0 && height > 15) {
-            return d.y
+          if(verticalValueInBar && d.y.toString().length * 7 * (1 + 1 / 3) < height ||
+            !verticalValueInBar && d.y > 0 && height > 15) {
+            return formatValueInBar(d.y)
           }
           return ""
         })
@@ -104,7 +120,15 @@ export default class Bar extends Component {
             return "#000000"
           }
           return "#ffffff"
-        })
+        }).
+      attr("transform", (d) => {
+        if(verticalValueInBar) {
+          const x = xScaleSet(d.x) ? xScaleSet(d.x) + xScaleSet.rangeBand() / 2 : -10000
+          const y = zeroBase - 10
+          return `rotate(-90,${x + 13 / 2},${y})`
+        }
+        return ""
+      })
     }
 
     if(dataset.style) {

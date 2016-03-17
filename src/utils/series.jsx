@@ -9,7 +9,7 @@ export function series(props) {
     x,
     y,
     categoricalColors
-  } = props;
+    } = props;
 
   categoricalColors = categoricalColors || d3.scale.category10();
 
@@ -26,7 +26,7 @@ export function series(props) {
       return {
         x: x(d),
         y: y(d[f.field]),
-        color: f.color,
+        color: d.color ? d.color : f.color,
         name: f.name,
         field: f.field
       }
