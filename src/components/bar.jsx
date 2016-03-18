@@ -90,7 +90,7 @@ export default class Bar extends Component {
         .attr("x", (d) => {
           const x = xScaleSet(d.x) ? xScaleSet(d.x) + xScaleSet.rangeBand() / 2 : -10000
           if(verticalValueInBar) {
-            return x + 13 / 2
+            return x + 11 / 2
           }
           return x
         })
@@ -120,15 +120,15 @@ export default class Bar extends Component {
             return "#000000"
           }
           return "#ffffff"
-        }).
-      attr("transform", (d) => {
-        if(verticalValueInBar) {
-          const x = xScaleSet(d.x) ? xScaleSet(d.x) + xScaleSet.rangeBand() / 2 : -10000
-          const y = zeroBase - 10
-          return `rotate(-90,${x + 13 / 2},${y})`
-        }
-        return ""
-      })
+        })
+        .attr("transform", (d) => {
+          if(verticalValueInBar) {
+            const x = xScaleSet(d.x) ? xScaleSet(d.x) + xScaleSet.rangeBand() / 2 : -10000
+            const y = zeroBase - 10
+            return `rotate(-90,${x + 11 / 2},${y})`
+          }
+          return ""
+        })
     }
 
     if(dataset.style) {

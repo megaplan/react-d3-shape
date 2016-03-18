@@ -22,7 +22,11 @@ export default class BarStack extends Component {
     barClassName: 'react-d3-basic__bar_stack',
     barStackClass: 'react-d3-basic__stack_bars',
     xScaleMaxWidthRect: 50,
-    valueInBar: false
+    valueInBar: false,
+    verticalValueInBar: false,
+    formatValueInBar: (d) => {
+      return d
+    }
   }
 
   _mkBarStack(dom) {
@@ -36,7 +40,9 @@ export default class BarStack extends Component {
       onMouseOut,
       barStackClass,
       valueInBar,
-      xScaleMaxWidthRect
+      xScaleMaxWidthRect,
+      verticalValueInBar,
+      formatValueInBar
       } = this.props;
 
     var dataset = series(this.props);
@@ -102,23 +108,31 @@ export default class BarStack extends Component {
         })
         .enter()
         .append("text")
-        .attr("text-anchor", "middle")
+        .attr("text-anchor", verticalValueInBar ? "start" : "middle")
         .attr("height", 15)
         .attr("x", (d) => {
-          return xScaleSet(d.x) ? xScaleSet(d.x) + xScaleSet.rangeBand() / 2 : -10000
+          const x = xScaleSet(d.x) ? xScaleSet(d.x) + xScaleSet.rangeBand() / 2 : -10000
+          if(verticalValueInBar) {
+            return x + 11 / 2
+          }
+          return x
         })
         .attr("y", (d) => {
           const height = Math.abs(yScaleSet(d.y) - yScaleSet(0))
+          if(verticalValueInBar) {
+            return yScaleSet(d.y0 + d.y) - 10 + height
+          }
           if(height < 15) {
             return yScaleSet(d.y0 + d.y) + height
           }
-          return yScaleSet(d.y0 + d.y) + 15;
+          return yScaleSet(d.y0 + d.y) + 15
         })
         .attr("style", "font-weight:bold")
         .text((d) => {
           const height = Math.abs(yScaleSet(d.y) - yScaleSet(0))
-          if(d.y > 0 && height > 15) {
-            return d.y
+          if(verticalValueInBar && d.y.toString().length * 7 * (1 + 1 / 3) < height ||
+            !verticalValueInBar && d.y > 0 && height > 15) {
+            return formatValueInBar(d.y)
           }
           return ""
         })
@@ -129,6 +143,15 @@ export default class BarStack extends Component {
             return "#000000"
           }
           return "#ffffff"
+        })
+        .attr("transform", (d) => {
+          if(verticalValueInBar) {
+            const height = Math.abs(yScaleSet(d.y) - yScaleSet(0))
+            const x = xScaleSet(d.x) ? xScaleSet(d.x) + xScaleSet.rangeBand() / 2 : -10000
+            const y = yScaleSet(d.y0 + d.y) + height - 10
+            return `rotate(-90,${x + 11 / 2},${y})`
+          }
+          return ""
         })
     }
 
