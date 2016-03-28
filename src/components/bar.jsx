@@ -107,7 +107,7 @@ export default class Bar extends Component {
         .attr("style", "font-weight:bold")
         .text((d) => {
           const height = Math.abs(d.y < domain[0] ? 0 : Math.abs(zeroBase - yScaleSet(d.y)))
-          if(verticalValueInBar && d.y.toString().length * 7 * (1 + 1 / 3) < height ||
+          if(verticalValueInBar && formatValueInBar(d.y).toString().length * 7 * (1 + 1 / 3) < height ||
             !verticalValueInBar && d.y > 0 && height > 15) {
             return formatValueInBar(d.y)
           }
