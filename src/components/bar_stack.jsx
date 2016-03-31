@@ -99,6 +99,7 @@ export default class BarStack extends Component {
         return Math.abs(yScaleSet(d.y) - yScaleSet(0));
       })
       .on("mouseover", onMouseOver)
+      .on("mousemove", onMouseOver)
       .on("mouseout", onMouseOut)
 
     if(valueInBar) {
@@ -153,6 +154,9 @@ export default class BarStack extends Component {
           }
           return ""
         })
+        .on("mouseover", onMouseOver)
+        .on("mousemove", onMouseOver)
+        .on("mouseout", onMouseOut)
     }
 
     return chart;
