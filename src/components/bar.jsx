@@ -78,6 +78,7 @@ export default class Bar extends Component {
         return d.color ? d.color : dataset.color
       })
       .on("mouseover", onMouseOver)
+      .on("mousemove", onMouseOver)
       .on("mouseout", onMouseOut)
 
     if(valueInBar) {
@@ -129,6 +130,10 @@ export default class Bar extends Component {
           }
           return ""
         })
+        .on("mouseover", onMouseOver)
+        .on("mousemove", onMouseOver)
+        .on("mouseout", onMouseOut)
+
     }
 
     if(dataset.style) {
