@@ -113,6 +113,7 @@ export default class Pie extends Component {
         return s;
       })
       .on("mouseover", onMouseOver)
+      .on("mousemove", onMouseOver)
       .on("mouseout", onMouseOut)
 
     var labelr = radius + 10;
