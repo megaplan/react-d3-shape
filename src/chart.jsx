@@ -29,7 +29,7 @@ export default class ChartSvg extends Component {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     margins: PropTypes.object.isRequired,
-    svgClassName: PropTypes.string.isRequired,
+    svgClassName: PropTypes.string.isRequired
   }
 
   render() {
@@ -56,7 +56,8 @@ export default class ChartSvg extends Component {
       id,
       x,
       y,
-      xWordWrap
+      xWordWrap,
+      style
       } = this.props;
 
     var xRange = xRange || [0, width - margins.left - margins.right];
@@ -122,6 +123,7 @@ export default class ChartSvg extends Component {
         className={svgClassName}
         id={id}
         ref="svgContainer"
+        style={style}
       >
         <g
           transform={t}
