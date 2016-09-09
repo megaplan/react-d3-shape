@@ -1,5 +1,5 @@
 {
-  "name": "react-d3-shape",
+  "name": "@megaplan/react-d3-shape",
   "version": "0.0.1",
   "description": "react shape component",
   "main": "./lib/index.js",
