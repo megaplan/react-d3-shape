@@ -18,6 +18,8 @@ export default class Pie extends Component {
     onMouseOver: (d) => {
     },
     onMouseOut: (d) => {
+    },
+    onClick: (d) => {
     }
   })
 
@@ -64,6 +66,7 @@ export default class Pie extends Component {
       radius,
       onMouseOut,
       onMouseOver,
+      onClick,
       showLegendText,
       showStroke,
       arcClassName
@@ -115,6 +118,7 @@ export default class Pie extends Component {
       .on("mouseover", onMouseOver)
       .on("mousemove", onMouseOver)
       .on("mouseout", onMouseOut)
+      .on("click", onClick)
 
     var labelr = radius + 10;
 
