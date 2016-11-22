@@ -20,7 +20,8 @@ export default class Pie extends Component {
     onMouseOut: (d) => {
     },
     onClick: (d) => {
-    }
+    },
+    arcClassName: ''
   })
 
   mkSeries() {
@@ -66,6 +67,7 @@ export default class Pie extends Component {
       radius,
       onMouseOut,
       onMouseOver,
+      onMouseMove,
       onClick,
       showLegendText,
       showStroke,
@@ -116,7 +118,7 @@ export default class Pie extends Component {
         return s;
       })
       .on("mouseover", onMouseOver)
-      .on("mousemove", onMouseOver)
+      .on("mousemove", onMouseMove ? onMouseMove : onMouseOver)
       .on("mouseout", onMouseOut)
       .on("click", onClick)
 
