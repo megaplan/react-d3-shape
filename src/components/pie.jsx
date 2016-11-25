@@ -99,7 +99,7 @@ export default class Pie extends Component {
         .enter()
         .append('g')
         .attr('class', arcClassName ? `${arcClassName} arc` : 'arc')
-        .attr('key', name)
+        .attr('key', (d) => name(d.data))
       ;
 
     g.append("path")
