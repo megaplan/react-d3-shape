@@ -33,7 +33,7 @@ export default class Pie extends Component {
       categoricalColors
       } = this.props;
 
-    var chartSeriesData = chartSeries.map((f, i) => {
+    return chartSeries.map((f, i) => {
 
       // set a color if not set
       if(!f.color)
@@ -52,8 +52,6 @@ export default class Pie extends Component {
 
       return Object.assign(f, {value: value(val)});
     })
-
-    return chartSeriesData;
   }
 
   _mkPie(dom) {
@@ -63,8 +61,7 @@ export default class Pie extends Component {
       innerRadius,
       outerRadius,
       pieSort,
-      value,
-      radius,
+      name,
       onMouseOut,
       onMouseOver,
       onMouseMove,
@@ -75,7 +72,7 @@ export default class Pie extends Component {
       } = this.props;
 
     var radius = this.props.radius || Math.min(width - 100, height - 100) / 2;
-    var outerRadius = outerRadius || (radius - 10)
+    outerRadius = outerRadius || (radius - 10)
 
     var chartSeriesData = this.mkSeries();
 
@@ -98,9 +95,12 @@ export default class Pie extends Component {
     var pieDom = d3.select(dom);
 
     var g = pieDom.selectAll('.arc')
-      .data(pie(chartSeriesData))
-      .enter().append('g')
-      .attr('class', `${arcClassName} arc`);
+        .data(pie(chartSeriesData))
+        .enter()
+        .append('g')
+        .attr('class', arcClassName ? `${arcClassName} arc` : 'arc')
+        .attr('key', name)
+      ;
 
     g.append("path")
       .attr("d", arc)
