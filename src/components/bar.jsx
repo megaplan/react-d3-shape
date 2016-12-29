@@ -38,6 +38,7 @@ export default class Bar extends Component {
       yScaleSet,
       onMouseOut,
       onMouseOver,
+      onMouseMove,
       xScaleMaxWidthRect,
       valueInBar,
       verticalValueInBar,
@@ -78,7 +79,7 @@ export default class Bar extends Component {
         return d.color ? d.color : dataset.color
       })
       .on("mouseover", onMouseOver)
-      .on("mousemove", onMouseOver)
+      .on("mousemove", onMouseMove ? onMouseMove : onMouseOver)
       .on("mouseout", onMouseOut)
 
     if(valueInBar) {
@@ -131,7 +132,7 @@ export default class Bar extends Component {
           return ""
         })
         .on("mouseover", onMouseOver)
-        .on("mousemove", onMouseOver)
+        .on("mousemove", onMouseMove ? onMouseMove : onMouseOver)
         .on("mouseout", onMouseOut)
 
     }
