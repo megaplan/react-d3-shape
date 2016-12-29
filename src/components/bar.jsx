@@ -20,6 +20,8 @@ export default class Bar extends Component {
     },
     onMouseOut: (d) => {
     },
+    onClick: (d) => {
+    },
     barClassName: 'react-d3-basic__bar',
     xScaleMaxWidthRect: 50,
     valueInBar: false,
@@ -39,6 +41,7 @@ export default class Bar extends Component {
       onMouseOut,
       onMouseOver,
       onMouseMove,
+      onClick,
       xScaleMaxWidthRect,
       valueInBar,
       verticalValueInBar,
@@ -81,6 +84,7 @@ export default class Bar extends Component {
       .on("mouseover", onMouseOver)
       .on("mousemove", onMouseMove ? onMouseMove : onMouseOver)
       .on("mouseout", onMouseOut)
+      .on("click", onClick)
 
     if(valueInBar) {
       bar.selectAll("text")
