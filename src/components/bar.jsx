@@ -25,7 +25,6 @@ export default class Bar extends Component {
     barClassName: 'react-d3-basic__bar',
     xScaleMaxWidthRect: 50,
     valueInBar: false,
-    yMinHeight: 0,
     verticalValueInBar: false,
     formatValueInBar: (d) => {
       return d
@@ -46,8 +45,7 @@ export default class Bar extends Component {
       xScaleMaxWidthRect,
       valueInBar,
       verticalValueInBar,
-      formatValueInBar,
-      yMinHeight
+      formatValueInBar
       } = this.props;
 
     var dataset = series(this.props)[0];
@@ -78,7 +76,7 @@ export default class Bar extends Component {
         return d.y < 0 ? zeroBase : yScaleSet(d.y);
       })
       .attr("height", (d) => {
-        return d.y < domain[0] ? 0 : Math.max(Math.abs(zeroBase - yScaleSet(d.y)), yMinHeight)
+        return d.y < domain[0] ? 0 : Math.abs(zeroBase - yScaleSet(d.y))
       })
       .style("fill", (d) => {
         return d.color ? d.color : dataset.color
