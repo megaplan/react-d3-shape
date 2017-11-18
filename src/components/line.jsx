@@ -2,9 +2,8 @@
 
 import {
   default as React,
-  PropTypes,
-  Component,
 } from 'react';
+import * as PropTypes from 'prop-types';
 
 import d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
